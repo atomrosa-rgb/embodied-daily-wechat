@@ -1,0 +1,19 @@
+name: embodied-daily
+on:
+  schedule:
+    - cron: '0 0 * * *'   # UTC 0:00 = 北京 8:00
+  workflow_dispatch:       # 允许手动点 Run 试跑
+permissions:
+  contents: read
+jobs:
+  push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.9' }
+      - run: pip install requests
+      - run: python fetch_issue.py
+        env:
+          PUSHPLUS_TOKEN: ${{ secrets.PUSHPLUS_TOKEN }}
+          SRC_REPO: ${{ secrets.SRC_REPO }}
